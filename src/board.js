@@ -14,7 +14,7 @@ function Board({ rows, columns }) {
       <h1>{`Rows: ${rows}, Columns: ${columns}`}</h1>
       <GridDiv rows={rows} columns={columns}>
         {list.map(x => (
-          <div>{x}</div>
+          <div key={x}>{x}</div>
         ))}
       </GridDiv>
     </>
