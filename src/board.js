@@ -53,30 +53,66 @@ const Cell = styled.div`
   color: white;
 `;
 
-function Board({ rows, columns }) {
+function Board() {
+  const [rows, setRows] = useState(10);
+  const [columns, setColumns] = useState(10);
   const [board, setBoard] = useState(randomBoard(rows, columns));
-  function clicky() {
+  const [isBuildingMode, setBuildingMode] = useState(true);
+
+  function generateBoardClick() {
+    setBoard(randomBoard(rows, columns));
+    setBuildingMode(false);
+  }
+
+  function nextBoardClick() {
     setBoard(nextBoard(board));
   }
+
   return (
     <>
-      <h1>{`Rows: ${rows}, Columns: ${columns}`}</h1>
-      <GridDiv rows={rows} columns={columns}>
-        {board.map((row, rowIndex) =>
-          row.map((col, colIndex) => (
-            <Cell isAlive={col} key={`${rowIndex}_${colIndex}`}>
-              {" "}
-              {hasLifeInNextRound(
-                col,
-                countNeighbours(board, rowIndex, colIndex)
-              )
-                ? "😀"
-                : ""}{" "}
-            </Cell>
-          ))
-        )}
-      </GridDiv>
-      <button onClick={clicky}>Next</button>
+      {isBuildingMode ? (
+        <>
+          <label htmlFor="rowsSlider">{`Rows: ${rows}`}</label>
+          <input
+            type="range"
+            name="rowsSlider"
+            min="5"
+            max="50"
+            defaultValue={rows}
+            onChange={e => setRows(e.target.value)}
+          />
+          <label htmlFor="columnsSlider">{`Columns: ${columns}`}</label>
+          <input
+            type="range"
+            name="columnsSlider"
+            min="5"
+            max="50"
+            defaultValue={columns}
+            onChange={e => setColumns(e.target.value)}
+          />
+          <button onClick={generateBoardClick}>Generate</button>
+        </>
+      ) : (
+        <>
+          <button onClick={() => setBuildingMode(true)}>Back</button>
+          <button onClick={nextBoardClick}>Next</button>
+          <GridDiv rows={rows} columns={columns}>
+            {board.map((row, rowIndex) =>
+              row.map((col, colIndex) => (
+                <Cell isAlive={col} key={`${rowIndex}_${colIndex}`}>
+                  {" "}
+                  {hasLifeInNextRound(
+                    col,
+                    countNeighbours(board, rowIndex, colIndex)
+                  )
+                    ? "😀"
+                    : "🤢"}{" "}
+                </Cell>
+              ))
+            )}
+          </GridDiv>
+        </>
+      )}
     </>
   );
 }
