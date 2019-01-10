@@ -29,23 +29,17 @@ function nextBoard(currentBoard) {
 }
 
 function countNeighbours(board, row, col) {
-  let count = 0;
-  if (row > 0) {
-    count += [
-      board[row - 1][col - 1],
-      board[row - 1][col],
-      board[row - 1][col + 1]
-    ].filter(x => x).length;
-  }
-  count += [board[row][col - 1], board[row][col + 1]].filter(x => x).length;
-  if (row < board.length - 1) {
-    count += [
-      board[row + 1][col - 1],
-      board[row + 1][col],
-      board[row + 1][col + 1]
-    ].filter(x => x).length;
-  }
-  return count;
+  let neighbourCells = [].concat(
+    row > 0
+      ? [board[row - 1][col - 1], board[row - 1][col], board[row - 1][col + 1]]
+      : [],
+    [board[row][col - 1], board[row][col + 1]],
+    row < board.length - 1
+      ? [board[row + 1][col - 1], board[row + 1][col], board[row + 1][col + 1]]
+      : []
+  );
+
+  return neighbourCells.filter(x => x).length;
 }
 
 function hasLifeInNextRound(isAlive, countNeighbours) {
