@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import Settings from "./settings";
 
 const GridDiv = styled.div`
   display: grid;
@@ -9,12 +10,12 @@ const GridDiv = styled.div`
   grid-column-gap: 5px;
 `;
 
-function randomBoard(rows, columns) {
+function randomBoard(rows, columns, lifeRate) {
   let board = new Array(rows);
   for (let r = 0; r < rows; r++) {
     board[r] = new Array(columns);
     for (let c = 0; c < columns; c++) {
-      board[r][c] = Math.random() < 0.3;
+      board[r][c] = Math.random() <= lifeRate;
     }
   }
   return board;
@@ -59,8 +60,8 @@ function Board() {
   const [board, setBoard] = useState(randomBoard(rows, columns));
   const [isBuildingMode, setBuildingMode] = useState(true);
 
-  function generateBoardClick() {
-    setBoard(randomBoard(rows, columns));
+  function generateBoardClick(ratio) {
+    setBoard(randomBoard(rows, columns, ratio));
     setBuildingMode(false);
   }
 
@@ -68,45 +69,43 @@ function Board() {
     setBoard(nextBoard(board));
   }
 
+  function toggleCell(row, column) {
+    let b = board.slice();
+    b[row][column] = !b[row][column];
+    setBoard(b);
+  }
+
   return (
     <>
       {isBuildingMode ? (
-        <>
-          <label htmlFor="rowsSlider">{`Rows: ${rows}`}</label>
-          <input
-            type="range"
-            name="rowsSlider"
-            min="5"
-            max="50"
-            defaultValue={rows}
-            onChange={e => setRows(e.target.value)}
-          />
-          <label htmlFor="columnsSlider">{`Columns: ${columns}`}</label>
-          <input
-            type="range"
-            name="columnsSlider"
-            min="5"
-            max="50"
-            defaultValue={columns}
-            onChange={e => setColumns(e.target.value)}
-          />
-          <button onClick={generateBoardClick}>Generate</button>
-        </>
+        <Settings
+          rows={rows}
+          setRows={setRows}
+          columns={columns}
+          setColumns={setColumns}
+          generateBoardClick={generateBoardClick}
+        />
       ) : (
         <>
           <button onClick={() => setBuildingMode(true)}>Back</button>
           <button onClick={nextBoardClick}>Next</button>
           <GridDiv rows={rows} columns={columns}>
             {board.map((row, rowIndex) =>
-              row.map((col, colIndex) => (
-                <Cell isAlive={col} key={`${rowIndex}_${colIndex}`}>
+              row.map((cell, colIndex) => (
+                <Cell
+                  isAlive={cell}
+                  key={`${rowIndex}_${colIndex}`}
+                  onClick={() => toggleCell(rowIndex, colIndex)}
+                >
                   {" "}
                   {hasLifeInNextRound(
-                    col,
+                    cell,
                     countNeighbours(board, rowIndex, colIndex)
                   )
                     ? "😀"
-                    : "🤢"}{" "}
+                    : cell
+                    ? "🤢"
+                    : ""}{" "}
                 </Cell>
               ))
             )}
