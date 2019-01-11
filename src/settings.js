@@ -1,7 +1,14 @@
 import React, { useState } from "react";
 
-function Settings({ rows, setRows, columns, setColumns, generateBoardClick }) {
-  const [ratio, setRatio] = useState(0.5);
+function Settings({
+  rows,
+  setRows,
+  columns,
+  setColumns,
+  ratio,
+  setRatio,
+  generateBoardClick
+}) {
   return (
     <>
       <label htmlFor="rowsSlider">{`Rows: ${rows}`}</label>

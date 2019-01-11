@@ -57,6 +57,7 @@ const Cell = styled.div`
 function Board() {
   const [rows, setRows] = useState(10);
   const [columns, setColumns] = useState(10);
+  const [ratio, setRatio] = useState(0.5);
   const [board, setBoard] = useState(randomBoard(rows, columns));
   const [isBuildingMode, setBuildingMode] = useState(true);
 
@@ -83,6 +84,8 @@ function Board() {
           setRows={setRows}
           columns={columns}
           setColumns={setColumns}
+          ratio={ratio}
+          setRatio={setRatio}
           generateBoardClick={generateBoardClick}
         />
       ) : (
