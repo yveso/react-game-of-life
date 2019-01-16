@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import GameLogic from "./game-logic";
 import Settings from "./settings";
 
 const GridDiv = styled.div`
@@ -10,45 +11,6 @@ const GridDiv = styled.div`
   grid-column-gap: 5px;
 `;
 
-function randomBoard(rows, columns, lifeRate) {
-  let board = new Array(rows);
-  for (let r = 0; r < rows; r++) {
-    board[r] = new Array(columns);
-    for (let c = 0; c < columns; c++) {
-      board[r][c] = Math.random() <= lifeRate;
-    }
-  }
-  return board;
-}
-
-function nextBoard(currentBoard) {
-  return currentBoard.map((row, rowIndex) => {
-    return row.map((col, colIndex) =>
-      hasLifeInNextRound(col, countNeighbours(currentBoard, rowIndex, colIndex))
-    );
-  });
-}
-
-function countNeighbours(board, row, col) {
-  let neighbourCells = [].concat(
-    row > 0
-      ? [board[row - 1][col - 1], board[row - 1][col], board[row - 1][col + 1]]
-      : [],
-    [board[row][col - 1], board[row][col + 1]],
-    row < board.length - 1
-      ? [board[row + 1][col - 1], board[row + 1][col], board[row + 1][col + 1]]
-      : []
-  );
-
-  return neighbourCells.filter(x => x).length;
-}
-
-function hasLifeInNextRound(isAlive, countNeighbours) {
-  return isAlive
-    ? countNeighbours === 2 || countNeighbours === 3
-    : countNeighbours === 3;
-}
-
 const Cell = styled.div`
   background: ${props => (props.isAlive ? "black" : "gray")};
   color: white;
@@ -58,39 +20,47 @@ function Board() {
   const [rows, setRows] = useState(10);
   const [columns, setColumns] = useState(10);
   const [ratio, setRatio] = useState(0.5);
-  const [board, setBoard] = useState(randomBoard(rows, columns));
-  const [isBuildingMode, setBuildingMode] = useState(true);
+  const [board, setBoard] = useState(GameLogic.newBoard(rows, columns));
+  const [nextBoard, setNextBoard] = useState(GameLogic.nextBoard(board));
+  const [isSettingsMode, setIsSettingsMode] = useState(true);
 
-  function generateBoardClick(ratio) {
-    setBoard(randomBoard(rows, columns, ratio));
-    setBuildingMode(false);
+  function changeBoard(newBoard) {
+    setBoard(newBoard);
+    setNextBoard(GameLogic.nextBoard(newBoard));
+  }
+
+  function generateBoardClick() {
+    changeBoard(GameLogic.newBoard(rows, columns, ratio));
+    setIsSettingsMode(false);
   }
 
   function nextBoardClick() {
-    setBoard(nextBoard(board));
+    changeBoard(GameLogic.nextBoard(board));
   }
 
   function toggleCell(row, column) {
     let b = board.slice();
     b[row][column] = !b[row][column];
-    setBoard(b);
+    changeBoard(b);
   }
 
   return (
     <>
-      {isBuildingMode ? (
+      {isSettingsMode ? (
         <Settings
-          rows={rows}
-          setRows={setRows}
-          columns={columns}
-          setColumns={setColumns}
-          ratio={ratio}
-          setRatio={setRatio}
-          generateBoardClick={generateBoardClick}
+          settings={{
+            rows,
+            setRows,
+            columns,
+            setColumns,
+            ratio,
+            setRatio,
+            generateBoardClick
+          }}
         />
       ) : (
         <>
-          <button onClick={() => setBuildingMode(true)}>Back</button>
+          <button onClick={() => setIsSettingsMode(true)}>New Board</button>
           <button onClick={nextBoardClick}>Next</button>
           <GridDiv rows={rows} columns={columns}>
             {board.map((row, rowIndex) =>
@@ -100,15 +70,7 @@ function Board() {
                   key={`${rowIndex}_${colIndex}`}
                   onClick={() => toggleCell(rowIndex, colIndex)}
                 >
-                  {" "}
-                  {hasLifeInNextRound(
-                    cell,
-                    countNeighbours(board, rowIndex, colIndex)
-                  )
-                    ? "😀"
-                    : cell
-                    ? "🤢"
-                    : ""}{" "}
+                  {nextBoard[rowIndex][colIndex] ? "😂" : cell ? "🤢" : ""}
                 </Cell>
               ))
             )}

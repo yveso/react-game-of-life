@@ -1,13 +1,15 @@
-import React, { useState } from "react";
+import React from "react";
 
 function Settings({
-  rows,
-  setRows,
-  columns,
-  setColumns,
-  ratio,
-  setRatio,
-  generateBoardClick
+  settings: {
+    rows,
+    setRows,
+    columns,
+    setColumns,
+    ratio,
+    setRatio,
+    generateBoardClick
+  }
 }) {
   return (
     <>
