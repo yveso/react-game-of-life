@@ -36,7 +36,22 @@ function hasLifeInNextRound(isAlive, countNeighbours) {
     : countNeighbours === 3;
 }
 
+function hasChangesInNextGeneration(current, next) {
+  const currentFlat = current.flat();
+  const nextFlat = next.flat();
+  if (currentFlat.every(x => x === false)) {
+    return false;
+  }
+  for (let i = 0; i < currentFlat.length; i++) {
+    if (currentFlat[i] !== nextFlat[i]) {
+      return true;
+    }
+  }
+  return false;
+}
+
 export default {
   newBoard,
-  nextBoard
+  nextBoard,
+  hasChangesInNextGeneration
 };

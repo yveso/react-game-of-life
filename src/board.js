@@ -61,7 +61,11 @@ function Board() {
       ) : (
         <>
           <button onClick={() => setIsSettingsMode(true)}>New Board</button>
-          <button onClick={nextBoardClick}>Next</button>
+          {GameLogic.hasChangesInNextGeneration(board, nextBoard) ? (
+            <button onClick={nextBoardClick}>Next</button>
+          ) : (
+            <span>No more moves</span>
+          )}
           <GridDiv rows={rows} columns={columns}>
             {board.map((row, rowIndex) =>
               row.map((cell, colIndex) => (
