@@ -1,12 +1,11 @@
 function newBoard(rows, columns, lifeRate) {
-  let board = new Array(rows);
-  for (let r = 0; r < rows; r++) {
-    board[r] = new Array(columns);
-    for (let c = 0; c < columns; c++) {
-      board[r][c] = Math.random() <= lifeRate;
-    }
-  }
-  return board;
+  return Array(rows)
+    .fill()
+    .map(row =>
+      Array(columns)
+        .fill()
+        .map(col => Math.random() <= lifeRate)
+    );
 }
 
 function nextBoard(currentBoard) {
