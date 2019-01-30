@@ -11,9 +11,15 @@ const GridDiv = styled.div`
   grid-column-gap: 5px;
 `;
 
-const Cell = styled.div`
+const Cell = styled.button`
   background: ${props => (props.isAlive ? "black" : "gray")};
   color: white;
+  border: 0;
+  margin: 0;
+  padding: 0;
+  &:focus {
+    outline: 0;
+  }
 `;
 
 function Board() {
