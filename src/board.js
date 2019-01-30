@@ -26,8 +26,8 @@ function Board() {
   const [rows, setRows] = useState(10);
   const [columns, setColumns] = useState(10);
   const [ratio, setRatio] = useState(0.5);
-  const [board, setBoard] = useState(GameLogic.newBoard(rows, columns));
-  const [nextBoard, setNextBoard] = useState(GameLogic.nextBoard(board));
+  const [board, setBoard] = useState([]);
+  const [nextBoard, setNextBoard] = useState([]);
   const [isSettingsMode, setIsSettingsMode] = useState(true);
 
   function changeBoard(newBoard) {
