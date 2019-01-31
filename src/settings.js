@@ -20,7 +20,7 @@ function Slider({ name, value, setValue, min, max, step = 1 }) {
         min={min}
         max={max}
         step={step}
-        onChange={e => setValue(e.target.value)}
+        onChange={e => setValue(Number(e.target.value))}
       />
       <span>{max}</span>
     </>
